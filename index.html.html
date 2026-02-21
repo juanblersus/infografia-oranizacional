@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografía y Quiz: Comunicación Organizacional</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #1A365D; 
+            --secondary-color: #2B6CB0; 
+            --accent-color: #DD6B20; 
+            --bg-light: #F7FAFC;
+            --text-main: #2D3748;
+            --text-light: #718096;
+            
+            --color-blue: #3182CE;
+            --color-green: #38A169;
+            --color-purple: #805AD5;
+            --color-orange: #DD6B20;
+            
+            --flow-asc: #D69E2E; 
+            --flow-desc: #319795; 
+            --flow-hor: #9F7AEA; 
+        }
+
+        /* TIPOGRAFÍA FLUIDA Y RESET */
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #e2e8f0;
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            font-size: 19px; 
+        }
+
+        h1, h2, h3, h4, .tab-btn, .sub-tab-btn, .acc-header, .step-title, .main-tab-btn, .quiz-title {
+            font-family: 'Bebas Kai', 'Bebas Neue', sans-serif;
+            font-weight: normal;
+            letter-spacing: 0.5px;
+            margin-top: 0;
+        }
+
+        /* CONTENEDOR PRINCIPAL */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #ffffff;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            border-radius: 12px;
+            overflow: hidden;
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInTab { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes pulseText { 0% { opacity: 0.5; transform: scale(0.98); } 50% { opacity: 1; transform: scale(1); } 100% { opacity: 0.5; transform: scale(0.98); } }
+
+        /* HEADER */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 50px 30px 30px 30px;
+            text-align: center;
+        }
+
+        .header h1 { font-size: 3.8em; letter-spacing: 1px; margin-bottom: 5px; line-height: 1.1; }
+        .header p { color: #E2E8F0; font-size: 1.2em; margin-top: 0; font-weight: 400; }
+
+        /* NAVEGACIÓN PRINCIPAL */
+        .main-nav { display: flex; background-color: #EDF2F7; border-bottom: 3px solid var(--secondary-color); }
+        .main-tab-btn {
+            flex: 1; padding: 18px 10px; background: none; border: none; font-size: 1.8em;
+            color: var(--text-light); cursor: pointer; transition: all 0.3s ease;
+        }
+        .main-tab-btn:hover { background-color: #E2E8F0; }
+        .main-tab-btn.active { background-color: var(--secondary-color); color: white; }
+        .main-view { display: none; }
+        .main-view.active { display: block; animation: fadeInTab 0.4s ease; }
+
+        .section { padding: 40px; border-bottom: 2px solid var(--bg-light); }
+        h2 { color: var(--secondary-color); font-size: 2.2em; border-bottom: 4px solid var(--accent-color); padding-bottom: 5px; display: inline-block; }
+
+        /* TABS GENERALES */
+        .tabs-container { margin-top: 15px; }
+        .tabs-nav { display: flex; gap: 10px; border-bottom: 2px solid #E2E8F0; margin-bottom: 20px; flex-wrap: wrap; }
+        .tab-btn { padding: 12px 20px; background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; font-size: 1.4em; color: var(--text-light); transition: all 0.3s ease; }
+        .tab-btn:hover { background-color: var(--bg-light); color: var(--text-main); }
+        .tab-content { display: none; padding: 25px; border-radius: 8px; background-color: var(--bg-light); animation: fadeInTab 0.4s ease; }
+        .tab-content.active { display: block; }
+        .tab-content h3 { font-size: 1.8em; }
+
+        .tab-btn.sec1-btn.active[data-color="blue"] { border-color: var(--color-blue); color: var(--color-blue); }
+        .tab-btn.sec1-btn.active[data-color="green"] { border-color: var(--color-green); color: var(--color-green); }
+        .tab-btn.sec1-btn.active[data-color="purple"] { border-color: var(--color-purple); color: var(--color-purple); }
+        #tab-def { border-left: 5px solid var(--color-blue); background-color: #EBF8FF; }
+        #tab-imp { border-left: 5px solid var(--color-green); background-color: #F0FFF4; }
+        #tab-rel { border-left: 5px solid var(--color-purple); background-color: #FAF5FF; }
+
+        .tab-btn.sec3-btn.active, .tab-btn.sec4-btn.active { border-color: var(--secondary-color); color: var(--secondary-color); }
+
+        /* SUB-TABS FLUJOS */
+        .sub-tabs-nav { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
+        .sub-tab-btn { padding: 10px 18px; border-radius: 25px; border: 1px solid #CBD5E0; background: white; cursor: pointer; font-size: 1.2em; color: var(--text-light); transition: all 0.2s ease; }
+        .sub-tab-btn.active[data-flow="asc"] { background-color: var(--flow-asc); color: white; border-color: var(--flow-asc); }
+        .sub-tab-btn.active[data-flow="desc"] { background-color: var(--flow-desc); color: white; border-color: var(--flow-desc); }
+        .sub-tab-btn.active[data-flow="hor"] { background-color: var(--flow-hor); color: white; border-color: var(--flow-hor); }
+        .sub-tab-content { display: none; padding: 20px; border-radius: 8px; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .sub-tab-content.active { display: block; animation: fadeInTab 0.3s ease; }
+        .sub-tab-content h4 { font-size: 1.6em; margin-bottom: 5px; }
+        #flujo-asc { border-left: 4px solid var(--flow-asc); }
+        #flujo-desc { border-left: 4px solid var(--flow-desc); }
+        #flujo-hor { border-left: 4px solid var(--flow-hor); }
+
+        /* TARJETAS INTERACTIVAS */
+        .mobile-hint { display: none; text-align: center; color: var(--accent-color); font-weight: bold; font-size: 0.9em; margin-top: -10px; margin-bottom: 15px; }
+        .grid-2x2 { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-top: 20px; }
+        .card { background: var(--bg-light); padding: 25px; border-radius: 10px; border-left: 5px solid #CBD5E0; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        .card h3 { color: var(--text-main); font-size: 1.8em; transition: color 0.3s ease; }
+        
+        .card.card-blue:hover, .card.card-blue.touched { transform: translateY(-8px); box-shadow: 0 12px 24px rgba(49, 130, 206, 0.2); border-left-color: var(--color-blue); background-color: #ffffff; }
+        .card.card-blue:hover h3, .card.card-blue.touched h3 { color: var(--color-blue); }
+        
+        .card.card-green:hover, .card.card-green.touched { transform: translateY(-8px); box-shadow: 0 12px 24px rgba(56, 161, 105, 0.2); border-left-color: var(--color-green); background-color: #ffffff; }
+        .card.card-green:hover h3, .card.card-green.touched h3 { color: var(--color-green); }
+        
+        .card.card-purple:hover, .card.card-purple.touched { transform: translateY(-8px); box-shadow: 0 12px 24px rgba(128, 90, 213, 0.2); border-left-color: var(--color-purple); background-color: #ffffff; }
+        .card.card-purple:hover h3, .card.card-purple.touched h3 { color: var(--color-purple); }
+        
+        .card.card-orange:hover, .card.card-orange.touched { transform: translateY(-8px); box-shadow: 0 12px 24px rgba(221, 107, 32, 0.2); border-left-color: var(--color-orange); background-color: #ffffff; }
+        .card.card-orange:hover h3, .card.card-orange.touched h3 { color: var(--color-orange); }
+
+        /* DOS COLUMNAS & ACORDEÓN */
+        .two-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 35px; }
+        .accordion { margin-top: 10px; }
+        .acc-item { margin-bottom: 10px; border: 1px solid #E2E8F0; border-radius: 6px; overflow: hidden; }
+        .acc-header { width: 100%; padding: 15px; background: var(--bg-light); border: none; text-align: left; color: var(--primary-color); cursor: pointer; transition: background 0.3s ease; display: flex; justify-content: space-between; align-items: center; font-size: 1.4em; }
+        .acc-header:hover { background: #E2E8F0; }
+        .acc-header::after { content: '+'; font-size: 1.2em; color: var(--secondary-color); font-family: 'Montserrat', sans-serif;}
+        .acc-item.active .acc-header { background: var(--primary-color); color: white; }
+        .acc-item.active .acc-header::after { content: '-'; color: white; }
+        .acc-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; background: white; font-size: 0.95em; }
+        .acc-item.active .acc-content { max-height: 400px; padding: 15px; border-top: 1px solid #E2E8F0; }
+
+        /* FOOTER LÍNEA DE TIEMPO */
+        .footer-section { background-color: var(--primary-color); color: white; padding: 40px; }
+        .footer-section h2 { color: white; border-bottom-color: var(--accent-color); }
+        .timeline { display: flex; justify-content: space-between; margin-top: 20px; gap: 15px; }
+        .step { flex: 1; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 1px solid transparent; -webkit-tap-highlight-color: transparent;}
+        .step:hover, .step.touched { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); transform: translateY(-5px); }
+        .step-num { display: inline-block; width: 45px; height: 45px; background: var(--secondary-color); color: white; border-radius: 50%; line-height: 45px; font-weight: bold; margin-bottom: 15px; font-size: 1.3em; transition: background 0.3s ease; font-family: 'Montserrat', sans-serif;}
+        .step:hover .step-num, .step.touched .step-num, .step.active .step-num { background: var(--accent-color); }
+        .step-title { display: block; font-size: 1.6em; margin-bottom: 10px; letter-spacing: 1px;}
+        .step-content { max-height: 0; opacity: 0; overflow: hidden; transition: all 0.5s ease; font-size: 0.95em; color: #E2E8F0; text-align: left; }
+        .step.active .step-content { max-height: 250px; opacity: 1; margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); }
+
+        /* ESTILOS DEL QUIZ */
+        .quiz-container { padding: 40px; }
+        .question-block { background: var(--bg-light); padding: 20px 25px; border-radius: 10px; margin-bottom: 25px; border-left: 5px solid var(--secondary-color); }
+        .question-block p { font-weight: 600; margin-top: 0; color: var(--primary-color); }
+        .options label { display: block; padding: 12px 15px; margin-bottom: 8px; background: white; border: 1px solid #E2E8F0; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; -webkit-tap-highlight-color: transparent;}
+        .options label:hover { background: #EDF2F7; }
+        .options input[type="radio"] { margin-right: 10px; transform: scale(1.2); }
+        
+        .btn-submit { display: block; width: 100%; padding: 18px; font-size: 1.6em; background-color: var(--accent-color); color: white; border: none; border-radius: 8px; cursor: pointer; transition: background 0.3s ease; font-family: 'Bebas Kai', 'Bebas Neue', sans-serif; letter-spacing: 1px; }
+        .btn-submit:hover { background-color: #C05621; }
+        
+        #quiz-results { display: none; margin-top: 30px; padding: 25px; border-radius: 10px; background: #EBF8FF; border: 2px solid var(--color-blue); }
+        .result-item { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #CBD5E0; }
+        .result-item:last-child { border-bottom: none; }
+        .correct { color: var(--color-green); font-weight: bold; }
+        .incorrect { color: #E53E3E; font-weight: bold; }
+        .feedback { font-size: 0.95em; margin-top: 5px; color: var(--text-main); }
+        .score-title { text-align: center; font-size: 2.8em; color: var(--primary-color); margin-bottom: 20px; }
+
+        /* ========================================================
+           MEDIA QUERIES (OPTIMIZACIÓN PARA CELULARES Y TABLETS) 
+           ======================================================== */
+        @media (max-width: 768px) {
+            body { padding: 0; font-size: 16px; background-color: #ffffff; }
+            .container { margin: 0; border-radius: 0; box-shadow: none; max-width: 100%; }
+            .header { padding: 40px 20px 25px 20px; }
+            .header h1 { font-size: 3em; }
+            .section, .quiz-container, .footer-section { padding: 30px 20px; }
+            h2 { font-size: 1.9em; }
+            .main-tab-btn { font-size: 1.4em; padding: 15px 5px; }
+            .grid-2x2, .two-columns, .timeline { grid-template-columns: 1fr; flex-direction: column; }
+            .tab-btn { flex: 1; text-align: center; padding: 12px 5px; font-size: 1.2em; }
+            .sub-tab-btn { flex: 1; text-align: center; margin-bottom: 5px; }
+            .mobile-hint { display: block; animation: pulseText 2s infinite; }
+            .step, .step-content { text-align: left; }
+            .acc-header { font-size: 1.2em; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <div class="header">
+            <h1>La Comunicación Organizacional</h1>
+            <p>El Sistema Nervioso de la Estrategia Empresarial</p>
+        </div>
+
+        <div class="main-nav">
+            <button class="main-tab-btn active" onclick="switchMainView('infografia-view', this)">📊 Infografía</button>
+            <button class="main-tab-btn" onclick="switchMainView('quiz-view', this)">🧠 Evalúate</button>
+        </div>
+
+        <div id="infografia-view" class="main-view active">
+            
+            <div class="section">
+                <h2>1. ¿Qué es?</h2>
+                <div class="tabs-container">
+                    <div class="tabs-nav">
+                        <button class="tab-btn sec1-btn active" data-color="blue" onclick="openTab(event, 'tab-def', 'sec1')">Definición</button>
+                        <button class="tab-btn sec1-btn" data-color="green" onclick="openTab(event, 'tab-imp', 'sec1')">Importancia</button>
+                        <button class="tab-btn sec1-btn" data-color="purple" onclick="openTab(event, 'tab-rel', 'sec1')">Relación</button>
+                    </div>
+
+                    <div id="tab-def" class="tab-content sec1 active">
+                        <h3 style="color: var(--color-blue);">El Concepto</h3>
+                        <p>Es el conjunto de procesos, mensajes y flujos de información estructurados dentro de una organización. Su propósito es alcanzar objetivos comunes, coordinar actividades y mantener a todos alineados.</p>
+                    </div>
+                    <div id="tab-imp" class="tab-content sec1">
+                        <h3 style="color: var(--color-green);">¿Por qué es vital?</h3>
+                        <p>Actúa como el pegamento que une la estrategia directiva con la ejecución operativa. Es fundamental para la cohesión de los equipos y para reaccionar rápida y eficazmente ante cambios.</p>
+                    </div>
+                    <div id="tab-rel" class="tab-content sec1">
+                        <h3 style="color: var(--color-purple);">Comunicación = Organización</h3>
+                        <p>La organización <em>es</em> comunicación. Sin flujos constantes, la estructura se vuelve rígida, pierde adaptabilidad y los esfuerzos individuales se desconectan de la meta global.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>2. Funciones Clave</h2>
+                <div class="mobile-hint">👆 Toca las tarjetas para interactuar</div>
+                <div class="grid-2x2">
+                    <div class="card card-blue" onclick="this.classList.toggle('touched')">
+                        <h3>Estratégica</h3>
+                        <p>Alinea los objetivos del negocio con el comportamiento de los empleados. Convierte la visión en acciones medibles.</p>
+                    </div>
+                    <div class="card card-green" onclick="this.classList.toggle('touched')">
+                        <h3>Integradora</h3>
+                        <p>Fomenta el sentido de pertenencia y construye la cultura interna. Rompe las barreras uniendo áreas aisladas (silos).</p>
+                    </div>
+                    <div class="card card-purple" onclick="this.classList.toggle('touched')">
+                        <h3>Identidad e Imagen</h3>
+                        <p>Construye y protege la percepción de la marca hacia adentro (employer branding) y hacia afuera (reputación).</p>
+                    </div>
+                    <div class="card card-orange" onclick="this.classList.toggle('touched')">
+                        <h3>Informativa</h3>
+                        <p>Garantiza que los datos relevantes lleguen a las personas adecuadas en el momento justo, reduciendo la incertidumbre.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="two-columns">
+                    <div>
+                        <h2>3. Tipos y Flujos</h2>
+                        <div class="tabs-container">
+                            <div class="tabs-nav">
+                                <button class="tab-btn sec3-btn active" onclick="openTab(event, 'tab-int-ext', 'sec3')">Interna/Externa</button>
+                                <button class="tab-btn sec3-btn" onclick="openTab(event, 'tab-form-inf', 'sec3')">Formal/Informal</button>
+                                <button class="tab-btn sec3-btn" onclick="openTab(event, 'tab-flujos', 'sec3')">Flujos</button>
+                            </div>
+
+                            <div id="tab-int-ext" class="tab-content sec3 active" style="padding: 15px;">
+                                <p><strong>🏢 Interna:</strong> Dirigida a los colaboradores para motivar y crear cultura.</p>
+                                <hr style="border: 0; border-top: 1px solid #E2E8F0; margin: 10px 0;">
+                                <p><strong>🌍 Externa:</strong> Dirigida a clientes, prensa y gobierno para posicionamiento.</p>
+                            </div>
+
+                            <div id="tab-form-inf" class="tab-content sec3" style="padding: 15px;">
+                                <p><strong>📝 Formal:</strong> Canales oficiales (correos, manuales). Estructurada.</p>
+                                <hr style="border: 0; border-top: 1px solid #E2E8F0; margin: 10px 0;">
+                                <p><strong>🗣️ Informal:</strong> Charlas espontáneas. Rápida, pero propensa a rumores.</p>
+                            </div>
+
+                            <div id="tab-flujos" class="tab-content sec3" style="padding: 15px; background: transparent;">
+                                <div class="sub-tabs-nav">
+                                    <button class="sub-tab-btn sec3-flujos-btn active" data-flow="asc" onclick="openSubTab(event, 'flujo-asc', 'sec3-flujos')">Ascendente</button>
+                                    <button class="sub-tab-btn sec3-flujos-btn" data-flow="desc" onclick="openSubTab(event, 'flujo-desc', 'sec3-flujos')">Descendente</button>
+                                    <button class="sub-tab-btn sec3-flujos-btn" data-flow="hor" onclick="openSubTab(event, 'flujo-hor', 'sec3-flujos')">Horizontal</button>
+                                </div>
+                                <div id="flujo-asc" class="sub-tab-content sec3-flujos active">
+                                    <h4 style="color: var(--flow-asc);">Base a dirección</h4>
+                                    <p style="margin: 0;">Permite el feedback. Ej: Buzón de sugerencias.</p>
+                                </div>
+                                <div id="flujo-desc" class="sub-tab-content sec3-flujos">
+                                    <h4 style="color: var(--flow-desc);">Dirección a base</h4>
+                                    <p style="margin: 0;">Alinea y da rumbo. Ej: Manuales operativos.</p>
+                                </div>
+                                <div id="flujo-hor" class="sub-tab-content sec3-flujos">
+                                    <h4 style="color: var(--flow-hor);">Entre pares</h4>
+                                    <p style="margin: 0;">Fomenta la colaboración. Ej: Chats de equipo.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h2>4. Perfil Profesional</h2>
+                        <p style="font-size:0.95em;">El comunicólogo moderno es un estratega integral (humano y tecnológico).</p>
+                        
+                        <div class="tabs-container">
+                            <div class="tabs-nav">
+                                <button class="tab-btn sec4-btn active" onclick="openTab(event, 'tab-competencias', 'sec4')">Competencias</button>
+                                <button class="tab-btn sec4-btn" onclick="openTab(event, 'tab-retos', 'sec4')">Retos Actuales</button>
+                            </div>
+
+                            <div id="tab-competencias" class="tab-content sec4 active" style="padding: 5px 0 0 0; background: transparent;">
+                                <div class="accordion">
+                                    <div class="acc-item">
+                                        <button class="acc-header" onclick="toggleAccordion(this)">1. Pensamiento Sistémico</button>
+                                        <div class="acc-content">Capacidad para entender a la organización como un todo interconectado, sabiendo que un mensaje impacta a todo el sistema.</div>
+                                    </div>
+                                    <div class="acc-item">
+                                        <button class="acc-header" onclick="toggleAccordion(this)">2. Análisis de Datos</button>
+                                        <div class="acc-content">Habilidad para interpretar métricas, resultados de encuestas y KPIs para tomar decisiones estratégicas basadas en evidencia.</div>
+                                    </div>
+                                    <div class="acc-item">
+                                        <button class="acc-header" onclick="toggleAccordion(this)">3. Narrativas Digitales</button>
+                                        <div class="acc-content">Creación de historias atractivas (Transmedia) que conecten emocionalmente con los colaboradores a través de múltiples canales.</div>
+                                    </div>
+                                    <div class="acc-item">
+                                        <button class="acc-header" onclick="toggleAccordion(this)">4. Producción Multimedia</button>
+                                        <div class="acc-content">Dominio de herramientas de diseño corporativo, edición de video y audio para crear materiales internos profesionales y visualmente impactantes.</div>
+                                    </div>
+                                    <div class="acc-item">
+                                        <button class="acc-header" onclick="toggleAccordion(this)">5. Gestión de Plataformas</button>
+                                        <div class="acc-content">Administración técnica y estratégica de redes sociales corporativas, intranets y plataformas de colaboración digital.</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="tab-retos" class="tab-content sec4" style="padding: 5px 0 0 0; background: transparent;">
+                                <div class="accordion">
+                                    <div class="acc-item">
+                                        <button class="acc-header" onclick="toggleAccordion(this)">1. Infoxicación</button>
+                                        <div class="acc-content">Evitar que los mensajes se pierdan en la sobrecarga de información.</div>
+                                    </div>
+                                    <div class="acc-item">
+                                        <button class="acc-header" onclick="toggleAccordion(this)">2. Modelos Híbridos</button>
+                                        <div class="acc-content">Mantener la cohesión en equipos que trabajan a distancia.</div>
+                                    </div>
+                                    <div class="acc-item">
+                                        <button class="acc-header" onclick="toggleAccordion(this)">3. Cancelación</button>
+                                        <div class="acc-content">Proteger la reputación manteniendo coherencia entre lo interno y externo.</div>
+                                    </div>
+                                    <div class="acc-item">
+                                        <button class="acc-header" onclick="toggleAccordion(this)">4. Gestión del Cambio</button>
+                                        <div class="acc-content">Acompañar adopciones tecnológicas mitigando resistencia.</div>
+                                    </div>
+                                    <div class="acc-item">
+                                        <button class="acc-header" onclick="toggleAccordion(this)">5. Medición ROI</button>
+                                        <div class="acc-content">Demostrar con métricas cómo la comunicación impacta la rentabilidad.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h2>5. Caso Aplicado: Gestión de Crisis</h2>
+                <p style="margin-bottom: 25px;"><em>Situación: Una empresa sufre un hackeo de datos.</em></p>
+                <div class="mobile-hint" style="color: white; animation: pulseText 2s infinite;">👆 Toca los pasos para ver la solución</div>
+                <div class="timeline">
+                    <div class="step" onclick="this.classList.toggle('active'); this.classList.toggle('touched');">
+                        <span class="step-num">1</span>
+                        <span class="step-title">Fase Interna</span>
+                        <div class="step-content">Informar a empleados para evitar pánico y filtraciones.</div>
+                    </div>
+                    <div class="step" onclick="this.classList.toggle('active'); this.classList.toggle('touched');">
+                        <span class="step-num">2</span>
+                        <span class="step-title">Fase Externa</span>
+                        <div class="step-content">Comunicado transparente en redes asumiendo responsabilidad.</div>
+                    </div>
+                    <div class="step" onclick="this.classList.toggle('active'); this.classList.toggle('touched');">
+                        <span class="step-num">3</span>
+                        <span class="step-title">Resultado</span>
+                        <div class="step-content">Se controla la narrativa digital ante la opinión pública.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="quiz-view" class="main-view quiz-container">
+            <h2 class="quiz-title" style="border:none; text-align:center; display:block; margin-bottom: 30px; font-size: 2.8em;">Cuestionario Final</h2>
+            
+            <form id="quiz-form">
+                <div class="question-block">
+                    <p>1. Según la infografía, ¿cuál es el propósito principal de la comunicación organizacional?</p>
+                    <div class="options">
+                        <label><input type="radio" name="q1" value="a" required> A) Aumentar únicamente las ventas externas.</label>
+                        <label><input type="radio" name="q1" value="b"> B) Alcanzar objetivos comunes, coordinar actividades y alinear a los miembros.</label>
+                        <label><input type="radio" name="q1" value="c"> C) Eliminar los rumores de pasillo de forma definitiva.</label>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <p>2. ¿Qué función de la comunicación se encarga de romper los "silos" y fomentar el sentido de pertenencia?</p>
+                    <div class="options">
+                        <label><input type="radio" name="q2" value="a" required> A) Función Estratégica</label>
+                        <label><input type="radio" name="q2" value="b"> B) Función Informativa</label>
+                        <label><input type="radio" name="q2" value="c"> C) Función Integradora</label>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <p>3. El buzón de sugerencias y las encuestas de clima laboral son ejemplos de comunicación con flujo:</p>
+                    <div class="options">
+                        <label><input type="radio" name="q3" value="a" required> A) Ascendente</label>
+                        <label><input type="radio" name="q3" value="b"> B) Descendente</label>
+                        <label><input type="radio" name="q3" value="c"> C) Horizontal</label>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <p>4. ¿Qué término se utiliza para describir el reto de gestionar la atención ante el exceso de correos y plataformas?</p>
+                    <div class="options">
+                        <label><input type="radio" name="q4" value="a" required> A) Cultura de Cancelación</label>
+                        <label><input type="radio" name="q4" value="b"> B) Infoxicación</label>
+                        <label><input type="radio" name="q4" value="c"> C) Employer Branding</label>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <p>5. En una crisis como un hackeo de datos, ¿cuál es la primera fase recomendada de intervención?</p>
+                    <div class="options">
+                        <label><input type="radio" name="q5" value="a" required> A) Negar el problema ante la prensa.</label>
+                        <label><input type="radio" name="q5" value="b"> B) Informar primero a los empleados mediante un comunicado interno.</label>
+                        <label><input type="radio" name="q5" value="c"> C) Publicar en redes sociales antes de avisar al personal.</label>
+                    </div>
+                </div>
+
+                <button type="button" class="btn-submit" onclick="calculateScore()">Evaluar Respuestas</button>
+            </form>
+
+            <div id="quiz-results">
+                <h3 class="score-title" id="score-display">Puntuación: 0/5</h3>
+                <div id="feedback-container"></div>
+                <button type="button" class="btn-submit" style="margin-top: 20px; background-color: var(--secondary-color);" onclick="resetQuiz()">Intentar de nuevo</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Lógica Cambio de Vistas
+        function switchMainView(viewId, btnElement) {
+            document.querySelectorAll('.main-view').forEach(view => view.classList.remove('active'));
+            document.querySelectorAll('.main-tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            btnElement.classList.add('active');
+            if(viewId === 'quiz-view') { window.scrollTo({ top: document.querySelector('.main-nav').offsetTop, behavior: 'smooth' }); }
+        }
+
+        // Lógica Pestañas
+        function openTab(evt, tabId, groupClass) {
+            let contents = document.getElementsByClassName("tab-content " + groupClass);
+            for (let i = 0; i < contents.length; i++) { contents[i].style.display = "none"; contents[i].classList.remove("active"); }
+            let buttons = document.getElementsByClassName("tab-btn " + groupClass + "-btn");
+            for (let i = 0; i < buttons.length; i++) { buttons[i].classList.remove("active"); }
+            document.getElementById(tabId).style.display = "block";
+            setTimeout(() => { document.getElementById(tabId).classList.add("active"); }, 10);
+            evt.currentTarget.classList.add("active");
+        }
+
+        function openSubTab(evt, tabId, groupClass) {
+            let contents = document.getElementsByClassName("sub-tab-content " + groupClass);
+            for (let i = 0; i < contents.length; i++) { contents[i].style.display = "none"; contents[i].classList.remove("active"); }
+            let buttons = document.getElementsByClassName("sub-tab-btn " + groupClass + "-btn");
+            for (let i = 0; i < buttons.length; i++) { buttons[i].classList.remove("active"); }
+            document.getElementById(tabId).style.display = "block";
+            setTimeout(() => { document.getElementById(tabId).classList.add("active"); }, 10);
+            evt.currentTarget.classList.add("active");
+        }
+
+        // Lógica Acordeón
+        function toggleAccordion(element) {
+            let item = element.parentElement;
+            let allItems = document.getElementsByClassName("acc-item");
+            for (let i = 0; i < allItems.length; i++) { if (allItems[i] !== item) { allItems[i].classList.remove("active"); } }
+            item.classList.toggle("active");
+        }
+
+        // Lógica del Quiz
+        const correctAnswers = { q1: 'b', q2: 'c', q3: 'a', q4: 'b', q5: 'b' };
+        const explanations = {
+            q1: "La definición establece que sirve para alcanzar objetivos comunes, coordinar actividades y alinear miembros.",
+            q2: "La función integradora fomenta el sentido de pertenencia y construye la cultura interna uniendo áreas aisladas.",
+            q3: "El flujo ascendente va de la base a la dirección y permite la retroalimentación o feedback.",
+            q4: "La infoxicación es la sobrecarga de información que provoca que los mensajes clave se pierdan.",
+            q5: "En una gestión de crisis, la Fase Interna (informar primero a los empleados) evita el pánico y previene filtraciones."
+        };
+
+        function calculateScore() {
+            let form = document.getElementById('quiz-form');
+            let score = 0;
+            let feedbackHTML = '';
+            let allAnswered = true;
+            
+            for(let i=1; i<=5; i++) { if(!form.elements['q'+i].value) allAnswered = false; }
+            if(!allAnswered) { alert("Por favor, responde todas las preguntas antes de evaluar."); return; }
+
+            for(let i=1; i<=5; i++) {
+                let userAnswer = form.elements['q'+i].value;
+                let isCorrect = (userAnswer === correctAnswers['q'+i]);
+                if(isCorrect) {
+                    score++;
+                    feedbackHTML += `<div class="result-item"><span class="correct">Pregunta ${i}: ¡Correcto!</span></div>`;
+                } else {
+                    feedbackHTML += `<div class="result-item"><span class="incorrect">Pregunta ${i}: Incorrecto.</span><div class="feedback"><strong>Explicación:</strong> ${explanations['q'+i]}</div></div>`;
+                }
+            }
+
+            document.getElementById('score-display').innerText = `Puntuación: ${score} / 5`;
+            document.getElementById('feedback-container').innerHTML = feedbackHTML;
+            document.querySelector('#quiz-form .btn-submit').style.display = 'none';
+            document.getElementById('quiz-results').style.display = 'block';
+            
+            // Auto scroll a los resultados
+            window.scrollTo({ top: document.getElementById('quiz-results').offsetTop, behavior: 'smooth' });
+        }
+
+        function resetQuiz() {
+            document.getElementById('quiz-form').reset();
+            document.getElementById('quiz-results').style.display = 'none';
+            document.querySelector('#quiz-form .btn-submit').style.display = 'block';
+            window.scrollTo({ top: document.querySelector('.main-nav').offsetTop, behavior: 'smooth' });
+        }
+    </script>
+
+</body>
+</html>
